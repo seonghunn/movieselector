@@ -1,49 +1,21 @@
 import React from "react";
-import axios from "axios";
-import Movie from "./Movie";
-import "./App.css"
+import { HashRouter, Route } from "react-router-dom";
+import About from "./routes/About";
+import Detail from "./routes/Detail";
+import Home from "./routes/Home";
+import Navigation from "./components/Navigation";
+import "./App.css";
 
-class App extends React.Component {
-  state = {
-    isLoading: true,
-    movies: []
-  };
-  getMovies = async () => {
-    const { data: { data: { movies } } } = await axios.get("https://yts-proxy.nomadcoders1.now.sh/list_movies.json");
-    this.setState({ movies, isLoading: false })
-  }
-
-  componentDidMount() {
-    this.getMovies();
-  }
-
-  render() {
-    const { isLoading, movies } = this.state;//this.state.isLoading isLoading은 객체안에 있고, 이 코드로 isLoading을 쓰면 바로 그것이 호출
-    return (
-      <section className="container">
-        {isLoading ? (
-          <div className="loader">
-            <span className="loader__text">Loading...</span>
-          </div>
-        ) : (
-          <div className="movies">
-            {movies.map(movie => (
-              <Movie
-                key={movie.id}
-                id={movie.id}
-                year={movie.year}
-                title={movie.title}
-                summary={movie.summary}
-                poster={movie.medium_cover_image}
-                genres={movie.genres}
-              />
-            ))}
-          </div>
-        )}
-      </section>
-    );
-  }
-}
-
-
+function App() {
+  return (
+    <HashRouter>
+      <Navigation />
+      <Route path="/" exact={true} component={Home} />
+      <Route path="/about" component={About} />
+      <Route path="/movie/:id" component={Detail} />
+    </HashRouter>
+  )
+}//exact 써야 /about일때 두개가 렌더되지 않음
+//class component 랑 function 차이
+//package.json에서 homepage, deploy, predeploy 설정으로 홈페이지 만듬
 export default App;
